@@ -9,12 +9,6 @@ from amqp.factory import get_protocol
 from amqp.stream import AMQPStreamReader
 
 
-g_buffer_size = 4096
-g_delay = 0.0001
-g_listen_addr = ('', 9090)
-g_fwd_addr = ('localhost', 5672)
-
-
 class AMQPStateMachine:
     def __init__(self):
         self.protocol = None
@@ -109,20 +103,21 @@ class ClientConnection:
 
 
 class ServerProxy:
-    def __init__(self, addr):
+    def __init__(self, listen_addr, fwd_addr):
         self.buffer_size = 1024 * 512  # 512KB
         self.buffer = array.array('c', b'\x00' * self.buffer_size)
         self.conns = {}
         self.socks = []
+        self.fwd_addr = fwd_addr
         self.ssock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.ssock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.ssock.bind(addr)
+        self.ssock.bind(listen_addr)
         self.ssock.listen(200)
         self.socks.append(self.ssock)
 
     def run(self):
         while 1:
-            time.sleep(g_delay)
+            time.sleep(0.0001)
             iready, oready, exready = select.select(self.socks, [], [])
             # todo: use threads
             for sock in iready:
@@ -151,7 +146,7 @@ class ServerProxy:
         return fwdsock
 
     def handle_connect(self):
-        fwdsock = self.make_fwdsock(g_fwd_addr)
+        fwdsock = self.make_fwdsock(self.fwd_addr)
         csock, caddr = self.ssock.accept()
         csockinfo = ClientSocketInfo(csock, caddr)
         if fwdsock:
@@ -160,14 +155,14 @@ class ServerProxy:
             self.conns[conn.fwdsock] = conn
             self.socks.append(conn.csockinfo.sock)
             self.socks.append(conn.fwdsock)
-            print csockinfo, "has connected"
+            print csockinfo, "connected client"
         else:
-            print "Can't establish connection with remote server." % self.ssock.getpeername(),
-            print "Closing connection with client side", csockinfo
+            print "Unable to connect to server." % self.ssock.getpeername(),
+            print "Disconnecting client.", csockinfo
             csock.close()
 
     def handle_close(self, conn):
-        print conn.csockinfo, "disconnected"
+        print conn.csockinfo, "disconnected client"
         del self.conns[conn.csockinfo.sock]
         del self.conns[conn.fwdsock]
         self.socks.remove(conn.csockinfo.sock)
@@ -175,8 +170,61 @@ class ServerProxy:
         conn.close()
 
 
+def show_usage():
+    print "\n".join([
+        'Usage:',
+        '  %s --listen=[host]:port --forward=host:[port]' % sys.argv[0],
+        'Example:',
+        '  %s --listen=:9090 --forward=localhost:5672' % sys.argv[0],
+        ''
+    ])
+    exit(1)
+
+
+def parse_args():
+    if len(sys.argv) != 3:
+        show_usage()
+    listen_host = ''
+    listen_port = None
+    fwd_host = None
+    fwd_port = 5672
+    for argv in sys.argv:
+        nv = argv.split('=')
+        if len(nv) != 2:
+            continue
+        if nv[0] == '--listen':
+            hp = nv[1].split(':')
+            if len(hp) != 2:
+                continue
+            listen_host = hp[0]
+            try:
+                listen_port = int(hp[1])
+            except ValueError:
+                print 'Invalid listen port.'
+                show_usage()
+        elif nv[0] == '--forward':
+            hp = nv[1].split(':')
+            if len(hp) != 2:
+                continue
+            fwd_host = hp[0]
+            if len(hp[1]):
+                try:
+                    fwd_port = int(hp[1])
+                except ValueError:
+                    print 'Invalid forward port.'
+                    show_usage()
+    if not listen_port:
+        print 'Listen port not specified.'
+        show_usage()
+    if not fwd_host:
+        print 'Forward host not specified.'
+        show_usage()
+    return (listen_host, listen_port), (fwd_host, fwd_port)
+
+
 if __name__ == '__main__':
-    server = ServerProxy(g_listen_addr)
+    listen_addr, fwd_addr = parse_args()
+    server = ServerProxy(listen_addr, fwd_addr)
     try:
         server.run()
     except KeyboardInterrupt:
