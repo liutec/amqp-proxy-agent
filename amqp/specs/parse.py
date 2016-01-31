@@ -34,17 +34,21 @@ class AMQPSpecsParser:
             if arg_type == 'DT_BOOL':
                 arg_names.append('\'%s\'' % arg_name)
                 arg_defaults.append(arg_default)
-                if more or len(arg_names) < 8:
+                if more:
                     continue
             num_args = len(arg_names)
             if num_args:
-                if num_args > 1:
+                if num_args == 1:
+                    output += [
+                        indent(tabs, '(%s, DT_BOOL, %s),' % (', '.join(arg_names), ', '.join(arg_defaults))),
+                    ]
+                else:
                     output += [
                         indent(tabs, '([%s], DT_BOOL, [%s]),' % (', '.join(arg_names), ', '.join(arg_defaults))),
                     ]
                 arg_names = []
                 arg_defaults = []
-                if num_args > 1:
+                if arg_type == 'DT_BOOL':
                     continue
             output += [
                 indent(tabs, '(\'%s\', %s, %s),' % (arg_name, arg_type, arg_default)),

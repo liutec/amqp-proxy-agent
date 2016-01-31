@@ -83,6 +83,7 @@ class AMQPStreamReader:
         if dt_mapping[2]:
             size += result
             if not self.avail(size):
+                self.offset += size
                 return None
             result = self.data[self.offset + dt_mapping[1]:self.offset + size]
         if not peek:

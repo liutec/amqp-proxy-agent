@@ -220,11 +220,8 @@ class AMQPProtocol080(AMQPProtocol):
                         ('ticket', DT_SHORT, 1),
                         ('exchange', DT_STRING_SHORT, None),
                         ('type', DT_STRING_SHORT, 'direct'),
-                        ('passive', DT_BOOL, False),
-                        ('durable', DT_BOOL, False),
-                        ('auto_delete', DT_BOOL, False),
-                        ('internal', DT_BOOL, False),
-                        ('nowait', DT_BOOL, False),
+                        (['passive', 'durable', 'auto_delete', 'internal', 'nowait'], DT_BOOL, [False, False, False, False, False]),
+                        ('arguments', DT_TABLE, {}),
                     ]
                 },
                 0xB: {
@@ -253,11 +250,8 @@ class AMQPProtocol080(AMQPProtocol):
                     'arguments': [
                         ('ticket', DT_SHORT, 1),
                         ('queue', DT_STRING_SHORT, ''),
-                        ('passive', DT_BOOL, False),
-                        ('durable', DT_BOOL, False),
-                        ('exclusive', DT_BOOL, False),
-                        ('auto_delete', DT_BOOL, False),
-                        ('nowait', DT_BOOL, False),
+                        (['passive', 'durable', 'exclusive', 'auto_delete', 'nowait'], DT_BOOL, [False, False, False, False, False]),
+                        ('arguments', DT_TABLE, {}),
                     ]
                 },
                 0xB: {
@@ -275,6 +269,7 @@ class AMQPProtocol080(AMQPProtocol):
                         ('queue', DT_STRING_SHORT, ''),
                         ('exchange', DT_STRING_SHORT, None),
                         ('routing_key', DT_STRING_SHORT, ''),
+                        ('nowait', DT_BOOL, False),
                         ('arguments', DT_TABLE, {}),
                     ]
                 },
@@ -363,10 +358,7 @@ class AMQPProtocol080(AMQPProtocol):
                         ('access_ticket', DT_SHORT, 1),
                         ('queue', DT_STRING_SHORT, ''),
                         ('consumer_tag', DT_STRING_SHORT, ''),
-                        ('no_local', DT_BOOL, False),
-                        ('no_ack', DT_BOOL, False),
-                        ('exclusive', DT_BOOL, False),
-                        ('nowait', DT_BOOL, False),
+                        (['no_local', 'no_ack', 'exclusive', 'nowait'], DT_BOOL, [False, False, False, False]),
                     ]
                 },
                 0x15: {
@@ -411,6 +403,7 @@ class AMQPProtocol080(AMQPProtocol):
                     'arguments': [
                         ('consumer_tag', DT_STRING_SHORT, None),
                         ('delivery_tag', DT_LONGLONG, None),
+                        ('redelivered', DT_BOOL, False),
                         ('exchange', DT_STRING_SHORT, None),
                         ('routing_key', DT_STRING_SHORT, None),
                     ]
@@ -427,6 +420,7 @@ class AMQPProtocol080(AMQPProtocol):
                     'name': 'get_ok',
                     'arguments': [
                         ('delivery_tag', DT_LONGLONG, None),
+                        ('redelivered', DT_BOOL, False),
                         ('exchange', DT_STRING_SHORT, None),
                         ('routing_key', DT_STRING_SHORT, None),
                         ('message_count', DT_LONG, None),
@@ -548,6 +542,7 @@ class AMQPProtocol080(AMQPProtocol):
                         ('exchange', DT_STRING_SHORT, ''),
                         ('routing_key', DT_STRING_SHORT, ''),
                         (['mandatory', 'immediate'], DT_BOOL, [False, False]),
+                        ('identifier', DT_STRING_SHORT, None),
                     ]
                 },
                 0x46: {
@@ -564,6 +559,7 @@ class AMQPProtocol080(AMQPProtocol):
                     'arguments': [
                         ('consumer_tag', DT_STRING_SHORT, None),
                         ('delivery_tag', DT_LONGLONG, None),
+                        ('redelivered', DT_BOOL, False),
                         ('exchange', DT_STRING_SHORT, None),
                         ('routing_key', DT_STRING_SHORT, None),
                         ('identifier', DT_STRING_SHORT, None),
