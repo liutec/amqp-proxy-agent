@@ -363,7 +363,10 @@ class AMQPProtocol080(AMQPProtocol):
                         ('access_ticket', DT_SHORT, 1),
                         ('queue', DT_STRING_SHORT, ''),
                         ('consumer_tag', DT_STRING_SHORT, ''),
-                        (['no_local', 'no_ack', 'exclusive', 'nowait'], DT_BOOL, [False, False, False, False]),
+                        ('no_local', DT_BOOL, False),
+                        ('no_ack', DT_BOOL, False),
+                        ('exclusive', DT_BOOL, False),
+                        ('nowait', DT_BOOL, False),
                     ]
                 },
                 0x15: {
