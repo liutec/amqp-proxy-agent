@@ -220,7 +220,11 @@ class AMQPProtocol080(AMQPProtocol):
                         ('ticket', DT_SHORT, 1),
                         ('exchange', DT_STRING_SHORT, None),
                         ('type', DT_STRING_SHORT, 'direct'),
-                        (['passive', 'durable', 'auto_delete', 'internal', 'nowait'], DT_BOOL, [False, False, False, False, False]),
+                        ('passive', DT_BOOL, False),
+                        ('durable', DT_BOOL, False),
+                        ('auto_delete', DT_BOOL, False),
+                        ('internal', DT_BOOL, False),
+                        ('nowait', DT_BOOL, False),
                     ]
                 },
                 0xB: {
@@ -249,7 +253,11 @@ class AMQPProtocol080(AMQPProtocol):
                     'arguments': [
                         ('ticket', DT_SHORT, 1),
                         ('queue', DT_STRING_SHORT, ''),
-                        (['passive', 'durable', 'exclusive', 'auto_delete', 'nowait'], DT_BOOL, [False, False, False, False, False]),
+                        ('passive', DT_BOOL, False),
+                        ('durable', DT_BOOL, False),
+                        ('exclusive', DT_BOOL, False),
+                        ('auto_delete', DT_BOOL, False),
+                        ('nowait', DT_BOOL, False),
                     ]
                 },
                 0xB: {
