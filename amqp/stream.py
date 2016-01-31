@@ -37,7 +37,6 @@ class AMQPStreamReader:
         DT_ARRAY:           ('>L',  4, True),
         DT_TABLE:           ('>L',  4, True),
         DT_BOOL:            ('?',   1, False),
-        DT_BIT_FLAGS:       ('>b',  1, False),
     }
 
     def __init__(self, data, dt_sig_map):
