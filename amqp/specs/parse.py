@@ -34,7 +34,7 @@ class AMQPSpecsParser:
             if arg_type == 'DT_BOOL':
                 arg_names.append('\'%s\'' % arg_name)
                 arg_defaults.append(arg_default)
-                if more or len(arg_names) == 8:
+                if more or len(arg_names) < 8:
                     continue
             num_args = len(arg_names)
             if num_args:
@@ -44,6 +44,8 @@ class AMQPSpecsParser:
                     ]
                 arg_names = []
                 arg_defaults = []
+                if num_args > 1:
+                    continue
             output += [
                 indent(tabs, '(\'%s\', %s, %s),' % (arg_name, arg_type, arg_default)),
             ]

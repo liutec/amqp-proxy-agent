@@ -7,7 +7,7 @@ from protocol import AMQPProtocol
 
 
 class AMQPProtocol080(AMQPProtocol):
-    HEADER = b'AMQP\x01\x01\x08\x00'
+    HEADER = b'AMQP\x00\x00\x08\x00'
     FRAME_OOB_METHOD = 0x4
     FRAME_OOB_HEADER = 0x5
     FRAME_OOB_BODY = 0x6
@@ -201,7 +201,6 @@ class AMQPProtocol080(AMQPProtocol):
                     'arguments': [
                         ('realm', DT_STRING_SHORT, '/data'),
                         (['exclusive', 'passive', 'active', 'write', 'read'], DT_BOOL, [False, True, True, True, True]),
-                        ('read', DT_BOOL, True),
                     ]
                 },
                 0xB: {
@@ -222,7 +221,6 @@ class AMQPProtocol080(AMQPProtocol):
                         ('exchange', DT_STRING_SHORT, None),
                         ('type', DT_STRING_SHORT, 'direct'),
                         (['passive', 'durable', 'auto_delete', 'internal', 'nowait'], DT_BOOL, [False, False, False, False, False]),
-                        ('arguments', DT_TABLE, {}),
                     ]
                 },
                 0xB: {
@@ -235,7 +233,6 @@ class AMQPProtocol080(AMQPProtocol):
                         ('ticket', DT_SHORT, 1),
                         ('exchange', DT_STRING_SHORT, None),
                         (['if_unused', 'nowait'], DT_BOOL, [False, False]),
-                        ('nowait', DT_BOOL, False),
                     ]
                 },
                 0x15: {
@@ -253,7 +250,6 @@ class AMQPProtocol080(AMQPProtocol):
                         ('ticket', DT_SHORT, 1),
                         ('queue', DT_STRING_SHORT, ''),
                         (['passive', 'durable', 'exclusive', 'auto_delete', 'nowait'], DT_BOOL, [False, False, False, False, False]),
-                        ('arguments', DT_TABLE, {}),
                     ]
                 },
                 0xB: {
@@ -298,7 +294,6 @@ class AMQPProtocol080(AMQPProtocol):
                         ('ticket', DT_SHORT, 1),
                         ('queue', DT_STRING_SHORT, ''),
                         (['if_unused', 'if_empty', 'nowait'], DT_BOOL, [False, False, False]),
-                        ('nowait', DT_BOOL, False),
                     ]
                 },
                 0x29: {
@@ -361,7 +356,6 @@ class AMQPProtocol080(AMQPProtocol):
                         ('queue', DT_STRING_SHORT, ''),
                         ('consumer_tag', DT_STRING_SHORT, ''),
                         (['no_local', 'no_ack', 'exclusive', 'nowait'], DT_BOOL, [False, False, False, False]),
-                        ('nowait', DT_BOOL, False),
                     ]
                 },
                 0x15: {
@@ -390,7 +384,6 @@ class AMQPProtocol080(AMQPProtocol):
                         ('exchange', DT_STRING_SHORT, ''),
                         ('routing_key', DT_STRING_SHORT, ''),
                         (['mandatory', 'immediate'], DT_BOOL, [False, False]),
-                        ('immediate', DT_BOOL, False),
                     ]
                 },
                 0x32: {
@@ -499,7 +492,6 @@ class AMQPProtocol080(AMQPProtocol):
                         ('queue', DT_STRING_SHORT, ''),
                         ('consumer_tag', DT_STRING_SHORT, ''),
                         (['no_local', 'no_ack', 'exclusive', 'nowait'], DT_BOOL, [False, False, False, False]),
-                        ('nowait', DT_BOOL, False),
                     ]
                 },
                 0x15: {
@@ -545,7 +537,6 @@ class AMQPProtocol080(AMQPProtocol):
                         ('exchange', DT_STRING_SHORT, ''),
                         ('routing_key', DT_STRING_SHORT, ''),
                         (['mandatory', 'immediate'], DT_BOOL, [False, False]),
-                        ('identifier', DT_STRING_SHORT, None),
                     ]
                 },
                 0x46: {
@@ -613,7 +604,6 @@ class AMQPProtocol080(AMQPProtocol):
                         ('queue', DT_STRING_SHORT, ''),
                         ('consumer_tag', DT_STRING_SHORT, ''),
                         (['no_local', 'exclusive', 'nowait'], DT_BOOL, [False, False, False]),
-                        ('nowait', DT_BOOL, False),
                     ]
                 },
                 0x15: {
@@ -642,7 +632,6 @@ class AMQPProtocol080(AMQPProtocol):
                         ('exchange', DT_STRING_SHORT, ''),
                         ('routing_key', DT_STRING_SHORT, ''),
                         (['mandatory', 'immediate'], DT_BOOL, [False, False]),
-                        ('immediate', DT_BOOL, False),
                     ]
                 },
                 0x32: {

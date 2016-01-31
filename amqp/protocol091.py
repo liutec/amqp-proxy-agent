@@ -192,7 +192,6 @@ class AMQPProtocol091(AMQPProtocol):
                     'arguments': [
                         ('realm', DT_STRING_SHORT, '/data'),
                         (['exclusive', 'passive', 'active', 'write', 'read'], DT_BOOL, [False, True, True, True, True]),
-                        ('read', DT_BOOL, True),
                     ]
                 },
                 0xB: {
@@ -213,7 +212,6 @@ class AMQPProtocol091(AMQPProtocol):
                         ('exchange', DT_STRING_SHORT, None),
                         ('type', DT_STRING_SHORT, 'direct'),
                         (['passive', 'durable', 'auto_delete', 'internal', 'nowait'], DT_BOOL, [False, False, False, False, False]),
-                        ('arguments', DT_TABLE, {}),
                     ]
                 },
                 0xB: {
@@ -226,7 +224,6 @@ class AMQPProtocol091(AMQPProtocol):
                         ('ticket', DT_SHORT, 0),
                         ('exchange', DT_STRING_SHORT, None),
                         (['if_unused', 'nowait'], DT_BOOL, [False, False]),
-                        ('nowait', DT_BOOL, False),
                     ]
                 },
                 0x15: {
@@ -272,7 +269,6 @@ class AMQPProtocol091(AMQPProtocol):
                         ('ticket', DT_SHORT, 0),
                         ('queue', DT_STRING_SHORT, ''),
                         (['passive', 'durable', 'exclusive', 'auto_delete', 'nowait'], DT_BOOL, [False, False, False, False, False]),
-                        ('arguments', DT_TABLE, {}),
                     ]
                 },
                 0xB: {
@@ -317,7 +313,6 @@ class AMQPProtocol091(AMQPProtocol):
                         ('ticket', DT_SHORT, 0),
                         ('queue', DT_STRING_SHORT, ''),
                         (['if_unused', 'if_empty', 'nowait'], DT_BOOL, [False, False, False]),
-                        ('nowait', DT_BOOL, False),
                     ]
                 },
                 0x29: {
@@ -380,7 +375,6 @@ class AMQPProtocol091(AMQPProtocol):
                         ('queue', DT_STRING_SHORT, ''),
                         ('consumer_tag', DT_STRING_SHORT, ''),
                         (['no_local', 'no_ack', 'exclusive', 'nowait'], DT_BOOL, [False, False, False, False]),
-                        ('arguments', DT_TABLE, {}),
                     ]
                 },
                 0x15: {
@@ -409,7 +403,6 @@ class AMQPProtocol091(AMQPProtocol):
                         ('exchange', DT_STRING_SHORT, ''),
                         ('routing_key', DT_STRING_SHORT, ''),
                         (['mandatory', 'immediate'], DT_BOOL, [False, False]),
-                        ('immediate', DT_BOOL, False),
                     ]
                 },
                 0x32: {
@@ -488,7 +481,6 @@ class AMQPProtocol091(AMQPProtocol):
                     'arguments': [
                         ('delivery_tag', DT_LONGLONG, 0),
                         (['multiple', 'requeue'], DT_BOOL, [False, True]),
-                        ('requeue', DT_BOOL, True),
                     ]
                 },
             },
