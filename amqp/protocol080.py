@@ -7,7 +7,7 @@ from protocol import AMQPProtocol
 
 
 class AMQPProtocol080(AMQPProtocol):
-    HEADER = b'AMQP\x00\x00\x08\x00'
+    HEADER = b'AMQP\x01\x01\x08\x00'
     FRAME_OOB_METHOD = 0x4
     FRAME_OOB_HEADER = 0x5
     FRAME_OOB_BODY = 0x6
