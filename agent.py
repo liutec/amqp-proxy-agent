@@ -15,7 +15,7 @@ class AMQPStateMachine:
 
     def handle_client_send(self, data):
         if not self.protocol:
-            self.protocol = get_protocol(''.join([x for x in data]))
+            self.protocol = get_protocol(''.join(data))
             return
         self.handle_frame(data)
 
