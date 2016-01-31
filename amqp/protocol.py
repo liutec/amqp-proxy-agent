@@ -3,7 +3,7 @@ from stream import *
 
 
 class AMQPProtocol:
-    DATA_TYPE_SIG = {
+    SIG_TO_DATA_TYPE = {
         'b': DT_OCTET_SIGNED,
         'B': DT_OCTET,
         'U': DT_SHORT_SIGNED,
@@ -34,6 +34,9 @@ class AMQPProtocol:
     CLASS_METHODS = {}
 
     def __init__(self):
+        self.DATA_TYPE_TO_SIG = {}
+        for sig, dt in self.SIG_TO_DATA_TYPE.iteritems():
+            self.DATA_TYPE_TO_SIG[dt] = sig
         pass
 
     def read_frame(self, reader):
@@ -50,8 +53,7 @@ class AMQPProtocol:
         elif frame_type == AMQPProtocol.FRAME_TYPE_HEARTBEAT:
             return self.read_heartbeat_frame(frame_type, reader)
 
-    @staticmethod
-    def read_method_arguments(reader, arguments):
+    def read_method_arguments(self, reader, arguments):
         result = []
         for argument in arguments:
             if isinstance(argument[0], list):
@@ -68,7 +70,7 @@ class AMQPProtocol:
                 else:
                     raise Exception('Non boolean concatenation attempt.')
             else:
-                result.append((argument[0], reader.read(argument[1])))
+                result.append((argument[0], (self.DATA_TYPE_TO_SIG[argument[1]], reader.read(argument[1]))))
         return result
 
     def read_method_frame(self, frame_type, reader):
@@ -95,7 +97,6 @@ class AMQPProtocol:
             result.append('arguments:')
             for name, value in arguments:
                 result.append(' - %s = %s' % (name, repr(value)))
-        result.append('> OFFSET: %d' % offset)
         return "\n".join(result)
 
     def read_header_frame(self, frame_type, reader):

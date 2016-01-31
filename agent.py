@@ -31,7 +31,7 @@ class AMQPStateMachine:
         self.handle_frame(data)
 
     def handle_frame(self, data):
-        reader = AMQPStreamReader(data, self.protocol.DATA_TYPE_SIG)
+        reader = AMQPStreamReader(data, self.protocol.SIG_TO_DATA_TYPE)
         while not reader.eof():
             frame = self.protocol.read_frame(reader)
             print frame
