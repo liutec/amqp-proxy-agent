@@ -82,10 +82,8 @@ class AMQPProtocol:
         known_method = known_class and (method_id in self.CLASS_METHODS[class_id]['methods'])
         if known_method:
             arguments = self.read_method_arguments(reader, self.CLASS_METHODS[class_id]['methods'][method_id]['arguments'])
-            offset = reader.offset
         else:
             arguments = None
-            offset = reader.offset
             reader.skip(frame_size - 4)
         reader.read_octet()  # FRAME_END
         class_name = self.CLASS_METHODS[class_id]['name'] if known_class else 'UNKNOWN'
