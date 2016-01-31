@@ -60,6 +60,8 @@ class AMQPStreamReader:
         return self.eof()
 
     def read(self, data_type, peek=False):
+        if data_type in [DT_OCTET, DT_BOOL]:
+            return self.read_octet(peek)
         if data_type not in self.DT_MAPPING:
             raise Exception('Invalid data type.')
         dt_mapping = self.DT_MAPPING[data_type]
@@ -91,10 +93,20 @@ class AMQPStreamReader:
         return result
 
     def read_char(self, peek=False):
-        return self.read_raw(('>c', 1, False), peek)
+        if not self.avail(1):
+            return None
+        result = self.data[self.offset]
+        if not peek:
+            self.offset += 1
+        return result
 
     def read_octet(self, peek=False):
-        return self.read(DT_OCTET, peek)
+        if not self.avail(1):
+            return None
+        result = ord(self.data[self.offset])
+        if not peek:
+            self.offset += 1
+        return result
 
     def read_short(self, peek=False):
         return self.read(DT_SHORT, peek)
