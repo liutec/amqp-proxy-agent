@@ -12,10 +12,16 @@ from amqp.stream import AMQPStreamReader
 class AMQPStateMachine:
     def __init__(self):
         self.protocol = None
+        self.wait_protocol = True
 
     def handle_client_send(self, data):
-        if not self.protocol:
-            self.protocol = get_protocol(''.join(data))
+        if self.wait_protocol:
+            try:
+                self.protocol = get_protocol(''.join(data))
+            except Exception, e:
+                print e
+                pass
+            self.wait_protocol = False
             return
         self.handle_frame(data)
 
