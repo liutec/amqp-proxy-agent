@@ -53,7 +53,7 @@ class AMQPStreamReader:
         return self.eof()
 
     def avail(self, size):
-        return self.offset + size <= self.size
+        return (self.offset + size) <= self.size
 
     def skip(self, size):
         self.offset += size
@@ -85,7 +85,8 @@ class AMQPStreamReader:
         if dt_info[2]:
             size += result
             if not self.avail(size):
-                self.offset += size
+                if not peek:
+                    self.offset += size
                 return None
             result = self.data[self.offset + dt_info[1]:self.offset + size]
         if not peek:
