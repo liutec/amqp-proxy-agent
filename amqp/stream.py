@@ -18,27 +18,27 @@ DT_STRING_LONG = 13
 DT_ARRAY = 14
 DT_TABLE = 15
 
+DT_MAPPING = {
+    DT_OCTET_SIGNED:    ('>b',  1, False),
+    DT_OCTET:           ('>B',  1, False),
+    DT_SHORT_SIGNED:    ('>h',  2, False),
+    DT_SHORT:           ('>H',  2, False),
+    DT_LONG_SIGNED:     ('>l',  4, False),
+    DT_LONG:            ('>L',  4, False),
+    DT_LONGLONG_SIGNED: ('>q',  8, False),
+    DT_LONGLONG:        ('>Q',  8, False),
+    DT_DECIMAL:         ('>Bl', 5, False),
+    DT_TIMESTAMP:       ('>Q',  8, False),
+    DT_VOID:            (None,  0, False),
+    DT_STRING_SHORT:    ('>B',  1, True),
+    DT_STRING_LONG:     ('>L',  4, True),
+    DT_ARRAY:           ('>L',  4, True),
+    DT_TABLE:           ('>L',  4, True),
+    DT_BOOL:            ('?',   1, False),
+}
+
 
 class AMQPStreamReader:
-    DT_MAPPING = {
-        DT_OCTET_SIGNED:    ('>b',  1, False),
-        DT_OCTET:           ('>B',  1, False),
-        DT_SHORT_SIGNED:    ('>h',  2, False),
-        DT_SHORT:           ('>H',  2, False),
-        DT_LONG_SIGNED:     ('>l',  4, False),
-        DT_LONG:            ('>L',  4, False),
-        DT_LONGLONG_SIGNED: ('>q',  8, False),
-        DT_LONGLONG:        ('>Q',  8, False),
-        DT_DECIMAL:         ('>Bl', 5, False),
-        DT_TIMESTAMP:       ('>Q',  8, False),
-        DT_VOID:            (None,  0, False),
-        DT_STRING_SHORT:    ('>B',  1, True),
-        DT_STRING_LONG:     ('>L',  4, True),
-        DT_ARRAY:           ('>L',  4, True),
-        DT_TABLE:           ('>L',  4, True),
-        DT_BOOL:            ('?',   1, False),
-    }
-
     def __init__(self, data, dt_sig_map):
         self.offset = 0
         self.size = len(data)
@@ -62,10 +62,10 @@ class AMQPStreamReader:
     def read(self, data_type, peek=False):
         if data_type in [DT_OCTET, DT_BOOL]:
             return self.read_octet(peek)
-        if data_type not in self.DT_MAPPING:
+        if data_type not in DT_MAPPING:
             raise Exception('Invalid data type.')
-        dt_mapping = self.DT_MAPPING[data_type]
-        raw = self.read_raw(dt_mapping, peek)
+        dt_info = DT_MAPPING[data_type]
+        raw = self.read_raw(dt_info, peek)
         if data_type in [DT_STRING_SHORT, DT_STRING_LONG]:
             return ''.join(raw)
         elif data_type == DT_DECIMAL:
@@ -77,17 +77,17 @@ class AMQPStreamReader:
         else:
             return raw
 
-    def read_raw(self, dt_mapping, peek=False):
-        size = dt_mapping[1]
-        if not dt_mapping[0] or not self.avail(size):
+    def read_raw(self, dt_info, peek=False):
+        size = dt_info[1]
+        if not dt_info[0] or not self.avail(size):
             return None
-        result = struct.unpack(dt_mapping[0], self.data[self.offset:self.offset + size])[0]
-        if dt_mapping[2]:
+        result = struct.unpack(dt_info[0], self.data[self.offset:self.offset + size])[0]
+        if dt_info[2]:
             size += result
             if not self.avail(size):
                 self.offset += size
                 return None
-            result = self.data[self.offset + dt_mapping[1]:self.offset + size]
+            result = self.data[self.offset + dt_info[1]:self.offset + size]
         if not peek:
             self.offset += size
         return result
