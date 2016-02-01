@@ -112,9 +112,9 @@ class AMQPProtocol:
     def read_body_frame(self, frame_type, reader):
         channel = reader.read_short()
         frame_size = reader.read_long()
-        reader.skip(frame_size)
+        payload = reader.read_raw(frame_size)
         reader.read_octet()  # FRAME_END
-        return '%s, channel: %d, payload size: %d' % (self.FRAME_TYPES[frame_type], channel, frame_size)
+        return "%s, channel: %d, payload size: %d,\nPayload: %s" % (self.FRAME_TYPES[frame_type], channel, frame_size, payload)
 
     def read_heartbeat_frame(self, frame_type, reader):
         return '%s' % (self.FRAME_TYPES[frame_type])

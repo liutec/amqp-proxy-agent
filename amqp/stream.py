@@ -65,7 +65,7 @@ class AMQPStreamReader:
         if data_type not in DT_MAPPING:
             raise Exception('Invalid data type.')
         dt_info = DT_MAPPING[data_type]
-        raw = self.read_raw(dt_info, peek)
+        raw = self.read_dt(dt_info, peek)
         if data_type in [DT_STRING_SHORT, DT_STRING_LONG]:
             return ''.join(raw)
         elif data_type == DT_DECIMAL:
@@ -77,7 +77,7 @@ class AMQPStreamReader:
         else:
             return raw
 
-    def read_raw(self, dt_info, peek=False):
+    def read_dt(self, dt_info, peek=False):
         size = dt_info[1]
         if not dt_info[0] or not self.avail(size):
             return None
@@ -91,6 +91,13 @@ class AMQPStreamReader:
             result = self.data[self.offset + dt_info[1]:self.offset + size]
         if not peek:
             self.offset += size
+        return result
+
+    def read_raw(self, size):
+        if not self.avail(size):
+            return None
+        result = self.data[self.offset:self.offset + size]
+        self.offset += size
         return result
 
     def read_char(self, peek=False):
